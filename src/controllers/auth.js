@@ -27,6 +27,22 @@ exports.register = async (req, res) => {
       },
     });
 
+  let data = req.body;
+
+  const dataInDB = await user.findOne({
+    where: {
+      email: data.email,
+    },
+  });
+
+  if (dataInDB) {
+    return res.status(400).send({
+      error: {
+        message: `Email ${data.email} is Already`,
+      },
+    });
+  }
+
   try {
     // we generate salt (random value) with 10 rounds
     const salt = await bcrypt.genSalt(10);
